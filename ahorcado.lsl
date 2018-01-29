@@ -1,10 +1,11 @@
 // LeoSevilla50
-// Ahorcado V.1 
+// Ahorcado V.2 
 // Parte del codigo es del juego del trivial que está publicado aquí:
 // http://wiki.secondlife.com/wiki/Trivia   creado por:
 // [K] Kira Komarov - 2011, License: GPLv3
 // Puedes modificar libremente este scrips
 // Solo te pido que me notifiques los cambios y/o mejoras
+// leosevilla50@gmail.com
 // https://github.com/LeoSevilla/SL-Ahorcado
 
 list MENU1 = [];
@@ -12,13 +13,15 @@ list MENU2 = [];
 integer listener;
 integer MENU_CHANNEL = 1000;
 integer SWITCH = TRUE;
+//integer acertado;
+integer countLetras;
 
 list user_scores = [];
 list trivia_lines = [];
 key bQuery = NULL_KEY;
 integer bLine = 0;
 integer comHandle = 0;
-string notecard = "films";
+string notecard = "";
 string palabra;
 list Lrespuesta =[];
 list answers = []; 
@@ -75,6 +78,7 @@ qNext(integer q) {
     //borrar la linea con la pregunta y respuestas
     trivia_lines = llDeleteSubList((trivia_lines=[]) + trivia_lines, q, q);
     //presentar la pregunta en el canal publico
+    countLetras == 1;
     llSay(0, "[" + llList2String(caSplit, 0) + "]" + " " + llList2String(caSplit, 1) + "\n" + (string)Lrespuesta);
 }
   
@@ -97,7 +101,8 @@ default
         bLine = 0;
         comHandle = 0;
         Lrespuesta =[];
-        answers = []; 
+        answers = [];
+        //acertado = FALSE;
         state menuAhorcado;
     } 
 } 
@@ -214,12 +219,25 @@ state trivia
                     }
                 }
                 llSay(0, (string)Lrespuesta);
+                integer index;// default is 0
+                countLetras = 0;
+                while (index < llGetListLength(Lrespuesta))
+                {
+                    if (llList2String(Lrespuesta, index)=="-")countLetras =1;
+                    //llSay(0, llList2String(Lrespuesta, index));
+                    ++index;
+                }
+                if (countLetras == 0){
+                    jump solucion;
+                }
             }
         }
         
         if("!r "+palabra != mes) return;
+@solucion;
         llSay(0, name + " acertaste! " + mes + " es la respuesta correcta!");
         llSleep(3);
+        //acertado = FALSE;
         integer itra;
         for(itra=0; itra<llGetListLength(user_scores); ++itra) {
             list usList = llParseString2List(llList2String(user_scores, itra), ["#"], [""]);
@@ -231,6 +249,7 @@ state trivia
         user_scores += (list)(name + "#1");
 @score_updated;
         Lrespuesta = [];
+        //countLetras = 0;
         state puntos;
     }
  
