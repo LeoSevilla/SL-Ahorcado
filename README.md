@@ -1,2 +1,2 @@
 # SL-Ahorcado
-Juego basado en el ahorcado para Second Life
+Juego basado en el ahorcado para Second Life :-)
